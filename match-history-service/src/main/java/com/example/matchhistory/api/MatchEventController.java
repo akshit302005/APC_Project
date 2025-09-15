@@ -1,32 +1,36 @@
 package com.example.matchhistory.api;
 
 import com.example.matchhistory.model.MatchEvent;
-import com.example.matchhistory.service.MatchEventService;
+import com.example.matchhistory.repo.MatchEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/matches")
 public class MatchEventController {
 
-    private final MatchEventService service;
+    @Autowired
+    private MatchEventRepository repository;
 
-    public MatchEventController(MatchEventService service) {
-        this.service = service;
-    }
+    @Autowired
+    private RestTemplate restTemplate;
 
-    // Accept JSON in request body
     @PostMapping("/add")
     public MatchEvent addMatch(@RequestBody MatchEvent match) {
-        // Set matchTime server-side
-        match.setMatchTime(LocalDateTime.now());
-        return service.saveMatch(match);
+        MatchEvent saved = repository.save(match);
+
+        // Send match result to ranking-service
+        String rankingServiceUrl = "http://localhost:8082/rankings/update";
+        restTemplate.postForObject(rankingServiceUrl, saved, String.class);
+
+        return saved;
     }
 
     @GetMapping("/all")
-    public List<MatchEvent> getMatches() {
-        return service.getAllMatches();
+    public List<MatchEvent> getAllMatches() {
+        return repository.findAll();
     }
 }
