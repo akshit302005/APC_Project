@@ -1,0 +1,5 @@
+com\example\matchhistory\service\MatchEventService.class
+com\example\matchhistory\api\MatchEventController.class
+com\example\matchhistory\model\MatchEvent.class
+com\example\matchhistory\repo\MatchEventRepository.class
+com\example\matchhistory\MatchHistoryApplication.class

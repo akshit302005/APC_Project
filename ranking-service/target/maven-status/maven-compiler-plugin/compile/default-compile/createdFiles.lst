@@ -1,0 +1,4 @@
+com\example\ranking\model\Team.class
+com\example\ranking\RankingApplication.class
+com\example\ranking\api\RankingController.class
+com\example\ranking\service\RankingService.class
